@@ -157,7 +157,7 @@ A encontrado wade como user.
 
 La password se encuentra buscando en la web, esta en la ruta /retro/index.php/2019/12/09/ready-player-one/, en un comentario de wade. 
 
-![Imagen Panel](img/Blaster.PNG)
+![Imagen Panel](../img/Blaster.PNG)
 ## Acceso remoto
 
 Una vez dentro de WordPress, ya sabemos que el usuario y la contraseña funcionan. Ahora, como es un sistema Windows, probaré a entrar por RDP utilizando la herramienta rdesktop, que permite conectarse de forma remota a la máquina Windows.
@@ -173,36 +173,36 @@ En el buscador hay una CVE el CVE-2019-1388, con esto toca buscar información d
 
 En el escritorio de wade abrir el archivo hhupd
 
-![Imagen Panel](img/EscritorioWade)
+![Imagen Panel](../img/EscritorioWade.PNG)
 
 Una vez abierta show more details
 
-![Imagen Panel](img/hhdp1)
+![Imagen Panel](../img/hhdp1.PNG)
 
-![Imagen Panel](img/hhdp2)
+![Imagen Panel](../img/hhdp2.PNG)
 
-![Imagen Panel](img/hhdp3)
+![Imagen Panel](../img/hddp3.PNG)
 
 File y save as
 
-![Imagen Panel](img/hhdp4)
+![Imagen Panel](../img/hddp4.PNG)
 
 Saldra un error, le damos ok
 
-![Imagen Panel](img/hhdp5)
+![Imagen Panel](../img/hddp5.PNG)
 
 Escribir
 
-![Imagen Panel](img/hhdp6)
+![Imagen Panel](../img/hddp6.PNG)
 
 Buscar cmd en la parte superior
-![Imagen Panel](img/hhdp7)
+![Imagen Panel](../img/hddp7.PNG)
 
 Open y nos dara la terminal, con permisos de administrador. Con esto buscar la flag.
-![Imagen Panel](img/hhdp8)
+![Imagen Panel](../img/hddp8.PNG)
 
 Flag
-![Imagen Panel](img/hhdp9)
+![Imagen Panel](../img/hddp9.PNG)
 
 ## Terminal con metasploit
 
@@ -232,7 +232,7 @@ set payload windows/meterpreter/reverse_http
 Y ejecutar con:  run -j
 
 El metasploit generara un comando que hay que enganchar en el powershell del windows victima. Se establecera una conexión
-![Imagen Panel](img/mtpBlaster)
+![Imagen Panel](../img/mtpBlaster.PNG)
 
 ## Mantener la conexión
 
