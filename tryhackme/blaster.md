@@ -157,7 +157,7 @@ A encontrado wade como user.
 
 La password se encuentra buscando en la web, esta en la ruta /retro/index.php/2019/12/09/ready-player-one/, en un comentario de wade. 
 
-![Imagen Panel](img/Blaster)
+![Imagen Panel](img/Blaster.PNG)
 ## Acceso remoto
 
 Una vez dentro de WordPress, ya sabemos que el usuario y la contraseña funcionan. Ahora, como es un sistema Windows, probaré a entrar por RDP utilizando la herramienta rdesktop, que permite conectarse de forma remota a la máquina Windows.
