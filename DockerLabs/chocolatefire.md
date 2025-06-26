@@ -39,7 +39,7 @@ Coded By: K3ysTr0K3R --> Hug me ʕっ•ᴥ•ʔっ
 [+] Password: HugmeNOW
 
 ```
-Foto
+![Imagen Panel](../img/chocholate.PNG) 
 
 Una vez dentro ir a users y buscar algun posible user o password para acceder por ssh. Probare chocolatitochingon con hydra por si encuentra su password.
 
